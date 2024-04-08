@@ -37,16 +37,46 @@ imports: [
   ],
 ```
 
+## Add a model to the project
+
+```bash
+# create a user model
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+
+@Entity()
+export class User {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  firstName: string;
+
+  @Column()
+  lastName: string;
+
+  @Column({ default: true })
+  isActive: boolean;
+}
+
+# add the model to the module
+TypeOrmModule.forFeature([User]),
+```
+
 ## Export Database Config
 
 ```bash
-export default () => ({
+import * as process from 'node:process';
+import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+
+export const databaseConfig: TypeOrmModuleOptions = {
   type: 'mysql',
   host: process.env.DB_HOST,
-  port: parseInt(process.env.DB_PORT, 10) || 3306,
+  port: +process.env.DB_PORT,
   username: process.env.DB_USER,
-  password: process.env.DB_PASS,
+  password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   autoLoadEntities: true,
-});
+  logging: process.env.LOGGING === 'true',
+};
+
 ```
